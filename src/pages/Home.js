@@ -72,6 +72,9 @@ const Home = () => {
       channelname:selectedContact2,
       users:selectedUsers
     }))
+    dispatch(getHome());
+    dispatch(getUsers());
+    dispatch(getContacts());
 
   }
   const handleCreateChannel = () => {
@@ -132,13 +135,16 @@ const Home = () => {
   return (
     <div className="flex h-screen">
       {/* Left section: Contact list */}
-      <div className="w-1/4 bg-gray-200 p-4 relative">
-        <div className='flex text-center '>
-        <h2 className="text-lg font-bold mb-4">Contacts</h2>
-        <svg aria-hidden="true" fill="none" stroke="currentColor" onClick={()=>setShowModal3(true)} stroke-width="1.5" viewBox="0 0 24 24" width={30} height={30} xmlns="http://www.w3.org/2000/svg">
+      <div className="w-1/4 bg-gray-200 p-4 relative sx: w-[20%]">
+        <div className='flex text-center w-full'>
+        <h2 className="text-lg font-bold mb-4 text-center self-start">Contacts</h2>
+          {
+              role && role === 'admin' &&(
+        <svg aria-hidden="true" fill="none" className={'mr-3 self-start' } stroke="currentColor" onClick={()=>setShowModal3(true)} stroke-width="1.5" viewBox="0 0 24 24" width={30} height={30} xmlns="http://www.w3.org/2000/svg">
   <path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" stroke-linecap="round" stroke-linejoin="round"></path>
   <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
 </svg>
+              )}
         </div>
         
         <ul className='flex flex-col'>
@@ -146,8 +152,12 @@ const Home = () => {
             ChatStore.Channels.map((channel, index) => (
               <li
                 key={index}
-                className={`inline-flex mb-1 items-center gap-x-2 py-3 px-4 text-sm font-medium bg-white border text-gray-800 -mt-px rounded-md`}
-                onClick={() => handleContactClick(channel.channelId)}
+                className={`inline-flex mb-1 items-center gap-x-2 py-3 px-4 text-sm font-medium bg-white border text-gray-800 -mt-px rounded-md hover:bg-blue-700 hover:cursor-pointer`}
+                onClick={(e) => {
+
+                  e.preventDefault()
+                  handleContactClick(channel.channelId)
+                }}
               >
                 {channel.channelName}
               </li>
@@ -163,13 +173,13 @@ const Home = () => {
               role && role === 'admin' &&(
 <div className='flex flex-col'>
 <button
-          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded absolute bottom-14 left-4 right-4"
+          className="mt-4 w-[200px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded absolute bottom-14 left-4 right-4"
           onClick={handleOpenModal}
         >
           Add Channel
         </button>
         <button
-          className="mt-4 bg-blue-500  hover:bg-blue-700 text-white font-bold py-1 px-2 rounded absolute bottom-4 left-4 right-4"
+          className="mt-4 bg-blue-500 w-[200px] sx:w-[60px]  hover:bg-blue-700 text-white font-bold py-1 px-2 rounded absolute bottom-4 left-4 right-4"
           onClick={handleOpenModal2}
         >
           Add User
@@ -188,21 +198,44 @@ const Home = () => {
       {/* Right section: Chat */}
       <div className="flex-1 bg-white p-4">
         <div className="flex flex-col h-full">
-          <div className="flex-1 overflow-y-auto">
-          {ChatStore && ChatStore.firstChannel && messages && messages.length > 0 ? (
-              messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`my-2 ${
-                    message.senderUsername === ChatStore.user ? 'text-right' : 'text-left'
-                  }`}
-                >
-                  <span className="font-bold">{message.senderUsername}: </span>
-                  {message.message}
-                </div>
-              ))
+          <div className="flex flex-col flex-1 overflow-y-auto w-full">
+            {ChatStore && ChatStore.firstChannel && messages && messages.length > 0 ? (
+                messages.map((message) => (
+
+                    <div
+                        key={message.id}
+                        className={`my-2 ${
+                            message.senderUsername === ChatStore.user ? 'flex-row-reverse  text-right self-end mr-2' : 'flex-row text-left self-start ml-2'
+                        }`}
+                    >
+                      <div className={`flex items-center ${message.senderUsername === ChatStore.user ? 'flex-row-reverse' :''}`}>
+                        <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+          <span className="font-medium text-gray-600 dark:text-gray-300">
+            {message.senderUsername[0]}
+          </span>
+                        </div>
+                        <div className={`flex ${message.senderUsername === ChatStore.user ? 'flex-row-reverse' :''}`}>
+                        <div
+                            className={`bg-[#03fc8c] rounded-[10px] p-2 ml-2  ${
+                                message.senderUsername === ChatStore.user ? 'bg-[#03d6a7] text-white' : 'bg-[#03fc8c] text-gray-900'
+                            }`}
+                        >
+                          {message.message}
+                        </div>
+                          <div className={` m-auto mx-2 ${
+                              message.senderUsername === ChatStore.user ? 'mr-2' : 'ml-2'
+                          }`}>
+                            {new Date(message.date).toLocaleString('en-US', {
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            }) }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                ))
             ) : (
-              <p className="text-center text-gray-500">No messages!</p>
+                <p className="text-center text-gray-500">No messages!</p>
             )}
           </div>
           <form className="mt-4" onSubmit={handleSendMessage}>

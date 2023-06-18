@@ -33,7 +33,7 @@ export const createChannel = createAsyncThunk('chat/createChannel',
             return rejectWithValue(error.message)
         }
     })
-    export const manageUsers = createAsyncThunk('chat/createChannel',
+    export const manageUsers = createAsyncThunk('chat/manageUsers',
     async (Data,{rejectWithValue}) => {
         try{
             const token = localStorage.getItem("token"); 
